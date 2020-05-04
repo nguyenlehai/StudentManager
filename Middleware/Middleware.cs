@@ -5,31 +5,25 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 
-namespace exam.Middleware
-{
-    // You may need to install the Microsoft.AspNetCore.Http.Abstractions package into your project
-    public class Middleware
-    {
-        private readonly RequestDelegate _next;
+namespace exam.Middleware {
+	// You may need to install the Microsoft.AspNetCore.Http.Abstractions package into your project
+	public class Middleware {
+		private readonly RequestDelegate _next;
 
-        public Middleware(RequestDelegate next)
-        {
-            _next = next;
-        }
+		public Middleware(RequestDelegate next) {
+			_next = next;
+		}
 
-        public Task Invoke(HttpContext httpContext)
-        {
+		public Task Invoke(HttpContext httpContext) {
 
-            return _next(httpContext);
-        }
-    }
+			return _next(httpContext);
+		}
+	}
 
-    // Extension method used to add the middleware to the HTTP request pipeline.
-    public static class MiddlewareExtensions
-    {
-        public static IApplicationBuilder UseMiddlewareClassTemplate(this IApplicationBuilder builder)
-        {
-            return builder.UseMiddleware<Middleware>();
-        }
-    }
+	// Extension method used to add the middleware to the HTTP request pipeline.
+	public static class MiddlewareExtensions {
+		public static IApplicationBuilder UseMiddlewareClassTemplate(this IApplicationBuilder builder) {
+			return builder.UseMiddleware < Middleware > ();
+		}
+	}
 }

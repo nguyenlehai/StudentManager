@@ -14,10 +14,6 @@ namespace exam.Controllers
         {
             _user = user;
         }
-        /// <summary>
-        /// Get list users
-        /// </summary>
-        /// <returns>The list.</returns>
         [Microsoft.AspNetCore.Authorization.Authorize(Roles = "Admin")]
         [HttpGet("list")]
         public async Task<IActionResult> List(int perpage,int page = 1)
@@ -30,8 +26,6 @@ namespace exam.Controllers
                 var users = await _user.Paginate(perpage, page);
                 return Ok(users);
             }
-
-
         }
 
         [Microsoft.AspNetCore.Authorization.Authorize(Roles = "Admin")]
