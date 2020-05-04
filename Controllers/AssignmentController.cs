@@ -11,21 +11,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-
-
-namespace exam.Controllers
-{
-    [Route("api/assignments")]
-    public class AssignmentController : Controller
-    {
+namespace exam.Controllers { [Route("api/assignments")]
+    public class AssignmentController: Controller {
         AssignmentRepository AssignmentRepository;
         SchoolYearRepository SchoolYearRepository;
         ClassRepository ClassRepository;
         SubjectRepository SubjectRepository;
         TeacherRepository TeacherRepository;
 
-        public AssignmentController(AssignmentRepository assignmentRepository, SchoolYearRepository schoolYearRepository, ClassRepository classRepository, SubjectRepository subjectRepository, TeacherRepository teacherRepository)
-        {
+        public AssignmentController(AssignmentRepository assignmentRepository, SchoolYearRepository schoolYearRepository, ClassRepository classRepository, SubjectRepository subjectRepository, TeacherRepository teacherRepository) {
             AssignmentRepository = assignmentRepository;
             SchoolYearRepository = schoolYearRepository;
             ClassRepository = classRepository;
@@ -33,123 +27,119 @@ namespace exam.Controllers
             TeacherRepository = teacherRepository;
         }
 
-        [Microsoft.AspNetCore.Authorization.Authorize]
-        [HttpGet]
-        public async Task<IActionResult> GetList()
-        {
+        [Microsoft.AspNetCore.Authorization.Authorize][HttpGet]
+        public async Task < IActionResult > GetList() {
             var assign = await AssignmentRepository.GetAll();
-            if (assign == null || !assign.Any()) return NotFound(new { message = "Không có phân công nào" });
-            List<dynamic> ls = new List<dynamic>();
-            foreach (Assignment ass in assign)
-            {
-                ls.Add(new
-                {
-                    id = ass.Id
-                ,                    schoolYear = (await SchoolYearRepository.Get(ass.SchoolYear.Id)).Name
-                ,
-                   classInfo = (await ClassRepository.Get(ass.Class.Id)).Name
-                ,
-                    subject = (await SubjectRepository.Get(ass.Subject.Id)).Name
-                ,
+            if (assign == null || !assign.Any()) return NotFound(new {
+                message = "Không có phân công nào"
+            });
+            List < dynamic > ls = new List < dynamic > ();
+            foreach(Assignment ass in assign) {
+                ls.Add(new {
+                    id = ass.Id,
+                    schoolYear = (await SchoolYearRepository.Get(ass.SchoolYear.Id)).Name,
+                    classInfo = (await ClassRepository.Get(ass.Class.Id)).Name,
+                    subject = (await SubjectRepository.Get(ass.Subject.Id)).Name,
                     teacher = (await TeacherRepository.Get(ass.Teacher.Id)).Name
                 });
             }
-            return Ok(new { status = ResultStatus.STATUS_OK, data = ls });
+            return Ok(new {
+                status = ResultStatus.STATUS_OK,
+                data = ls
+            });
         }
 
-        [Microsoft.AspNetCore.Authorization.Authorize]
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetItem(int id)
-        {
+        [Microsoft.AspNetCore.Authorization.Authorize][HttpGet("{id}")]
+        public async Task < IActionResult > GetItem(int id) {
             var nation = await AssignmentRepository.Get(id);
-            if (nation == null)
-                return NotFound(new { status = ResultStatus.STATUS_NOT_FOUND, message = "Không tìm thấy phân công" });
-            return Ok(new { status = ResultStatus.STATUS_OK, data = nation });
+            if (nation == null) return NotFound(new {
+                status = ResultStatus.STATUS_NOT_FOUND,
+                message = "Không tìm thấy phân công"
+            });
+            return Ok(new {
+                status = ResultStatus.STATUS_OK,
+                data = nation
+            });
         }
 
-        [Microsoft.AspNetCore.Authorization.Authorize(Roles = "SchoolBoard")]
-        [HttpPost]
-        public async Task<IActionResult> CreateItem([FromBody] PostAssignment fromBody)
-        {
-            if (fromBody.SchoolYearId == default(int))
-                return BadRequest(new
-                {
-                    status = ResultStatus.STATUS_INVALID_INPUT,
-                    message = "Thiếu mã năm học"
-                });
+        [Microsoft.AspNetCore.Authorization.Authorize(Roles = "SchoolBoard")][HttpPost]
+        public async Task < IActionResult > CreateItem([FromBody] PostAssignment fromBody) {
+            if (fromBody.SchoolYearId ==
+                default(int))
+            return BadRequest(new {
+                status = ResultStatus.STATUS_INVALID_INPUT,
+                message = "Thiếu mã năm học"
+            });
 
-            if (fromBody.SchoolYearId == default(int))
-                return BadRequest(new
-                {
-                    status = ResultStatus.STATUS_INVALID_INPUT,
-                    message = "Thiếu mã lớp học"
-                });
+            if (fromBody.SchoolYearId ==
+                default(int))
+            return BadRequest(new {
+                status = ResultStatus.STATUS_INVALID_INPUT,
+                message = "Thiếu mã lớp học"
+            });
 
-            if (fromBody.SchoolYearId == default(int))
-                return BadRequest(new
-                {
-                    status = ResultStatus.STATUS_INVALID_INPUT,
-                    message = "Thiếu mã môn học"
-                });
+            if (fromBody.SchoolYearId ==
+                default(int))
+            return BadRequest(new {
+                status = ResultStatus.STATUS_INVALID_INPUT,
+                message = "Thiếu mã môn học"
+            });
 
-            if (fromBody.SchoolYearId == default(int))
-                return BadRequest(new
-                {
-                    status = ResultStatus.STATUS_INVALID_INPUT,
-                    message = "Thiếu mã giáo viên học"
-                });
+            if (fromBody.SchoolYearId ==
+                default(int))
+            return BadRequest(new {
+                status = ResultStatus.STATUS_INVALID_INPUT,
+                message = "Thiếu mã giáo viên học"
+            });
 
-            Assignment ass = new Assignment
-            {
+            Assignment ass = new Assignment {
                 SchoolYear = await SchoolYearRepository.Get(fromBody.SchoolYearId),
-                Class = await ClassRepository.Get(fromBody.ClassId),
-                Subject = await SubjectRepository.Get(fromBody.SubjectId),
-                Teacher = await TeacherRepository.Get(fromBody.TeacherId)
+                    Class = await ClassRepository.Get(fromBody.ClassId),
+                    Subject = await SubjectRepository.Get(fromBody.SubjectId),
+                    Teacher = await TeacherRepository.Get(fromBody.TeacherId)
             };
             await AssignmentRepository.Create(ass);
-            return Ok(new
-            {
+            return Ok(new {
                 status = ResultStatus.STATUS_OK,
                 data = ass
             });
         }
 
-        [Microsoft.AspNetCore.Authorization.Authorize(Roles = "SchoolBoard")]
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutItem(int id, [FromBody] PostAssignment fromBody)
-        {
+        [Microsoft.AspNetCore.Authorization.Authorize(Roles = "SchoolBoard")][HttpPut("{id}")]
+        public async Task < IActionResult > PutItem(int id, [FromBody] PostAssignment fromBody) {
             var exist = await AssignmentRepository.Get(id);
-            if (exist == null) return NotFound(new { status = ResultStatus.STATUS_NOT_FOUND, message = "Không tìm thấy phân công" });
+            if (exist == null) return NotFound(new {
+                status = ResultStatus.STATUS_NOT_FOUND,
+                message = "Không tìm thấy phân công"
+            });
 
+            if (fromBody.SchoolYearId ==
+                default(int))
+            return BadRequest(new {
+                status = ResultStatus.STATUS_INVALID_INPUT,
+                message = "Thiếu mã năm học"
+            });
 
-            if (fromBody.SchoolYearId == default(int))
-                return BadRequest(new
-                {
-                    status = ResultStatus.STATUS_INVALID_INPUT,
-                    message = "Thiếu mã năm học"
-                });
+            if (fromBody.SchoolYearId ==
+                default(int))
+            return BadRequest(new {
+                status = ResultStatus.STATUS_INVALID_INPUT,
+                message = "Thiếu mã lớp học"
+            });
 
-            if (fromBody.SchoolYearId == default(int))
-                return BadRequest(new
-                {
-                    status = ResultStatus.STATUS_INVALID_INPUT,
-                    message = "Thiếu mã lớp học"
-                });
+            if (fromBody.SchoolYearId ==
+                default(int))
+            return BadRequest(new {
+                status = ResultStatus.STATUS_INVALID_INPUT,
+                message = "Thiếu mã môn học"
+            });
 
-            if (fromBody.SchoolYearId == default(int))
-                return BadRequest(new
-                {
-                    status = ResultStatus.STATUS_INVALID_INPUT,
-                    message = "Thiếu mã môn học"
-                });
-
-            if (fromBody.SchoolYearId == default(int))
-                return BadRequest(new
-                {
-                    status = ResultStatus.STATUS_INVALID_INPUT,
-                    message = "Thiếu mã giáo viên học"
-                });
-
+            if (fromBody.SchoolYearId ==
+                default(int))
+            return BadRequest(new {
+                status = ResultStatus.STATUS_INVALID_INPUT,
+                message = "Thiếu mã giáo viên học"
+            });
 
             exist.SchoolYear = await SchoolYearRepository.Get(fromBody.SchoolYearId);
             exist.Class = await ClassRepository.Get(fromBody.ClassId);
@@ -157,19 +147,25 @@ namespace exam.Controllers
             exist.Teacher = await TeacherRepository.Get(fromBody.TeacherId);
 
             await AssignmentRepository.Update(id, exist);
-            return Ok(new { status = ResultStatus.STATUS_OK, message = "Sửa thông tin phân công thành công", data = exist });
+            return Ok(new {
+                status = ResultStatus.STATUS_OK,
+                message = "Sửa thông tin phân công thành công",
+                data = exist
+            });
         }
 
-        [Microsoft.AspNetCore.Authorization.Authorize(Roles = "SchoolBoard")]
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
+        [Microsoft.AspNetCore.Authorization.Authorize(Roles = "SchoolBoard")][HttpDelete("{id}")]
+        public async Task < IActionResult > Delete(int id) {
             var exist = await AssignmentRepository.Get(id);
-            if (exist == null)
-                return NotFound(new { status = ResultStatus.STATUS_NOT_FOUND, message = "Không tìm thấy phân công" });
+            if (exist == null) return NotFound(new {
+                status = ResultStatus.STATUS_NOT_FOUND,
+                message = "Không tìm thấy phân công"
+            });
             await AssignmentRepository.Delete(id);
-            return Ok(new { status = ResultStatus.STATUS_OK, message = "Xóa thành công!" });
+            return Ok(new {
+                status = ResultStatus.STATUS_OK,
+                message = "Xóa thành công!"
+            });
         }
     }
 }
-

@@ -16,8 +16,6 @@ namespace StudentManager.Repository
         {
         }
 
-
-
         public async Task Save(PointController pointController, int studentId, int classId, int schoolYearId)
         {
             float diemTBChungCacMonCN = (float)Math.Round(await pointController.DiemTrungBinhChungCacMonCaNam(studentId, classId, schoolYearId), 2);

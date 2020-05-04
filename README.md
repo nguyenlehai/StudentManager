@@ -1,3 +1,5 @@
 # StudentManager
-1. Cài postman và visual về để sử dụng
-2. Run trước trong visual trước, rồi test các câu lệnh trong postman, tùy từng người dùng hay công việc thì sẽ phải get api và đăng nhập trước!
+1. Cài postman và visual để sử dụng hệ thống.
+2. Run hệ thống trong visual.
+3. Test các câu lệnh trong postman, 
+#####(tùy từng người dùng hay công việc thì sẽ phải get api và đăng nhập trước!)
